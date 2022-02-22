@@ -56,27 +56,30 @@ namespace Blur.Handlers
         {
             return line;
         }
-        private int GetProductQuantity(string line)
+        private double GetProductQuantity(string line)
         {
             const int INDEX_QUANTITY_CONTENT = 0;
             const int INDEX_QUANTITY = 1;
 
-            string[] content = line.Split(' ');
+            char[] whitespace = new char[] { ' ', '\t' };
+            string[] content = line.Split(whitespace);
             string quantity = content[INDEX_QUANTITY_CONTENT].Split(':')[INDEX_QUANTITY];
-            return int.Parse(quantity);
+            return double.Parse(quantity);
         }
         private string GetProductUnity(string line)
         {
             const int INDEX_UNITY_CONTENT = 2;
 
-            string[] content = line.Split(' ');
+            char[] whitespace = new char[] { ' ', '\t' };
+            string[] content = line.Split(whitespace);
             return content[INDEX_UNITY_CONTENT];
         }
         private double GetProductUnityPrice(string line)
         {
             const int INDEX_UNITY_PRICE_CONTENT = 7;
 
-            string[] content = line.Split(' ');
+            char[] whitespace = new char[] { ' ', '\t' };
+            string[] content = line.Split(whitespace);
             string unitPrice = content[INDEX_UNITY_PRICE_CONTENT];
             return double.Parse(unitPrice);
         }

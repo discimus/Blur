@@ -9,7 +9,7 @@ namespace Blur.Entities
     public class Product
     {
         public string Name { get; set; }
-        public int Quantity { get; set; }
+        public double Quantity { get; set; }
         public string Unity { get; set; }
         public double UnityPrice { get; set; }
         public double Total { get; set; }
