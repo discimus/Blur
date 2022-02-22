@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Blur.Src.Handlers
+namespace Blur.Handlers
 {
     class ProductsTxtFileHandler : IHandler
     {
@@ -17,7 +17,7 @@ namespace Blur.Src.Handlers
         {
             _lines = lines;
         }
-        public void Convert()
+        public void Convert(string outputPath)
         {
             System.Collections.Generic.List<Entities.Product> products = new List<Entities.Product>();
             bool isNewProduct = true;
@@ -37,14 +37,12 @@ namespace Blur.Src.Handlers
                         isNewProduct = false;
                         break;
                     case "LINE_QTTY_UNITY_UNITY_PRICE":
-                        /**
-                         * Qtde.:1 
-                         * UN: 
-                         * Vl. Unit.:
-                         * **/
+                        currentProduct.Quantity = GetProductQuantity(line);
+                        currentProduct.Unity = GetProductUnity(line);
+                        currentProduct.UnityPrice = GetProductUnityPrice(line);
                         break;
                     case "LINE_TOTAL":
-                        //Console.WriteLine("LINE_TOTAL");
+                        currentProduct.Total = GetProductTotal(line);
                         products.Add(currentProduct);
                         currentProduct = new Entities.Product();
                         isNewProduct = true;
@@ -52,11 +50,39 @@ namespace Blur.Src.Handlers
                 }
             }
 
-            GenerateJson(products);
+            GenerateJson(products, outputPath);
         }
         private string GetProductName(string line)
         {
             return line;
+        }
+        private int GetProductQuantity(string line)
+        {
+            const int INDEX_QUANTITY_CONTENT = 0;
+            const int INDEX_QUANTITY = 1;
+
+            string[] content = line.Split(' ');
+            string quantity = content[INDEX_QUANTITY_CONTENT].Split(':')[INDEX_QUANTITY];
+            return int.Parse(quantity);
+        }
+        private string GetProductUnity(string line)
+        {
+            const int INDEX_UNITY_CONTENT = 2;
+
+            string[] content = line.Split(' ');
+            return content[INDEX_UNITY_CONTENT];
+        }
+        private double GetProductUnityPrice(string line)
+        {
+            const int INDEX_UNITY_PRICE_CONTENT = 7;
+
+            string[] content = line.Split(' ');
+            string unitPrice = content[INDEX_UNITY_PRICE_CONTENT];
+            return double.Parse(unitPrice);
+        }
+        private double GetProductTotal(string line)
+        {
+            return double.Parse(line);
         }
         private string IdentifyLineType(string line)
         {
@@ -102,12 +128,10 @@ namespace Blur.Src.Handlers
 
             return response;
         }
-        private void GenerateJson(System.Collections.Generic.List<Entities.Product> products)
+        private void GenerateJson(System.Collections.Generic.List<Entities.Product> products, string outputpath)
         {
-            foreach(Entities.Product product in products)
-            {
-                Console.WriteLine(product.Name);
-            }
+            string parsedjson = Newtonsoft.Json.JsonConvert.SerializeObject(products);
+            System.IO.File.WriteAllTextAsync(outputpath, parsedjson);
         }
     }
 }

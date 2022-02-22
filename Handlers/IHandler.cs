@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Blur.Src.Handlers
+namespace Blur.Handlers
 {
     interface IHandler
     {
-        void Convert();
+        void Convert(string outputpath);
     }
 }

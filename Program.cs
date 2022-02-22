@@ -5,17 +5,20 @@
         static void Main(string[] args)
         {
             string workingDirectory = System.AppDomain.CurrentDomain.BaseDirectory;
-            string inputPath = string.Format("{0}{1}", workingDirectory, @"..\..\..\Input");
+            string inputpath = string.Format("{0}{1}", workingDirectory, @"..\..\..\Input");
+            string outputpath = string.Format("{0}{1}", workingDirectory, @"..\..\..\Output");
 
-            string[] files = System.IO.Directory.GetFiles(inputPath);
+            string[] files = System.IO.Directory.GetFiles(inputpath);
 
             foreach (string file in files)
             {
                 string[] lines = System.IO.File.ReadAllLines(file);
+                string timestamp = System.DateTime.Now.ToString("yyyyMMddHHmmssffff");
+                string filepath = string.Format(@"{0}\{1}{2}", outputpath, timestamp, ".json");
 
-                Blur.Src.Handlers.ProductsTxtFileHandler handler = new Src.Handlers.ProductsTxtFileHandler(lines);
+                Blur.Handlers.ProductsTxtFileHandler handler = new Handlers.ProductsTxtFileHandler(lines);
 
-                handler.Convert();
+                handler.Convert(filepath);
             }
         }
     }
